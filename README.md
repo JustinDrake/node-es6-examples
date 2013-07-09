@@ -206,14 +206,14 @@ var random = Proxy.create({
   get: function () {
     return Math.random();
   }
-);
+});
 ```
 
 The function `Proxy.create` creates a proxy whose handler object is passed as the first argument. Here, we have a single `get` trap which overrides property reads. For each read of `random`, a new random value is computed at run time.
 
 ```javascript
 // Prints three random numbers
-console.log(random, random, random);
+console.log(random.value, random.value, random.value);
 ```
 
 Similarly, property writes can be trapped by the `set` trap.
@@ -233,7 +233,7 @@ The continue with the theme of dictating how objects should behave at the "nativ
 
 ```javascript
 function pythonArray(array) {
-  var dummy = [];
+  var dummy = array;
 
   return Proxy.create({
     set: function (receiver, index, value) {
@@ -241,7 +241,7 @@ function pythonArray(array) {
     },
     get: function (receiver, index) {
         index = parseInt(index);
-        return index < 0 ? array[array.length + index] : array[index];
+        return index < 0 ? dummy[dummy.length + index] : dummy[index];
     }
   });
 }
@@ -320,7 +320,7 @@ Weak maps fit in a somewhat different category to that of maps and sets because 
 
 The JavaScript virtual machine, V8 in the case of Node, periodically frees memory allocated to objects no longer in scope. An object is not longer in scope if there is no chain of references from the current scope leading to it. If an object is held in scope, but never gets used, we say there is a memory leak. Such leaks are especially problematic when they occur periodically, as the memory allocated by the virtual machine increases over time, eventually breaking things.
 
-By setting a key-value pair in a weap map, no reference to the property *key* is created. Instead, references to keys which are internal to weak maps can be thought as "weak", meaning that from the point of view of the garbage collector they are ignored. In particular, property keys of a weak map cannot be enumerated. Also, and weak maps do not have a `size` property analogous to maps as this would expose garbage collector behaviour which should be kept hidden.
+By setting a key-value pair in a weap map, no reference to the property *key* is created. Instead, references to keys which are internal to weak maps can be thought as "weak", meaning that from the point of view of the garbage collector they are ignored. In particular, property keys of a weak map cannot be enumerated. Also, weak maps do not have a `size` property analogous to maps as this would expose garbage collector behaviour which should be kept hidden.
 
 ```javascript
 let weakMap = WeakMap();
@@ -339,7 +339,7 @@ server.on('userConnect', function (user) {
   userMetadata.set(user, { connectionTime: Date.now() });
 
   server.on('userDisconnect', function () {
-    // Do stuff with `user` and discard of it, automatically discarding the metadata
+    // Do stuff with `user` and discard of it, automatically discarding `userMetadata`
   });
 });
 ```
