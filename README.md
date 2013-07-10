@@ -5,7 +5,7 @@ This text introduces and illustrates, with simple examples, ECMAScript 6 (ES6 fo
 
 The underlying philosophy and broad direction of ES6 has mostly been agreed upon. However, implementation details have and will change until the final specification is published. Experimental ES6 in Node may not comply with the latest draft specification (which is available [here](http://people.mozilla.org/~jorendorff/es6-draft.html) in HTML format).
 
-For a list of flags enabling experimental JavaScript in Node use the command `node --v8-options | grep harmony`. The unstable branch 0.11.x has greater ES6 support than the stable branch 0.10.x. For simplicity, the we assume 0.11.x but examples may work in 0.10.x also. To easily switch between versions, we recommend the excellent [n](https://github.com/visionmedia/n) Node version manager.
+For a list of flags enabling experimental JavaScript in Node use the command `node --v8-options | grep harmony`. The unstable branch 0.11.x has greater ES6 support than the stable branch 0.10.x. For simplicity, we assume the 0.11.x branch here, but most examples will work in 0.10.x also. To easily switch between versions, we recommend the excellent [n](https://github.com/visionmedia/n) Node version manager.
 
 The single `--harmony` flag enables most of the ES6 experimental features. However, as of v0.11.3, you will also need the `--use_strict` flag for the block scoping examples, along with the `--harmony_generators` flag for the generator examples.
 
@@ -16,11 +16,11 @@ Block scoping
 Let's start with `let`. You can think of `let` as a block-scoped variation of `var` for variable declaration.
 
 ```javascript
-{ let a = 'I am declared inside a block'; }
+{ let a = 'I am declared inside an anonymous block'; }
 console.log(a); // ReferenceError: a is not defined
 ```
 
-Up until ES6, JavaScript only had function scoping. This is largely considered a design flaw which developers have to hack around. We illustrate improvements brought by ES6 with two examples.
+Up until ES6, JavaScript only had function scoping. This is considered a design flaw which developers hack around. We illustrate improvements brought by ES6 with two examples.
 
 The first example is about private variables.
 
@@ -35,7 +35,7 @@ var login = (function ES5() {
 }());
 ```
 ```javascript
-// ES6: A clean block
+// ES6: A simple block
 {
   let privateKey = Math.random();
 
@@ -86,15 +86,18 @@ The designers of ES6 conceived of a baby sister for `let`. The keyword `const` d
 
 ```javascript
 const a = 'You shall remain constant!';
-a = 'I wanna be free!'; // SyntaxError: Assignment to constant variable
+
+// SyntaxError: Assignment to constant variable
+a = 'I wanna be free!';
 ```
 
-Finally, ES6 is fixing a long standing issue regarding block scope function definitions. From the point of view of the ES5 specification, the following code is ambiguous.
+Finally, ES6 is fixing a long standing issue with block scope function definitions. The following code is not well defined in the ES5 specification.
 
 ```javascript
 function f() { console.log('I am outside!'); }
 (function () {
   if(false) {
+    // What should happen with this redeclaration?
     function f() { console.log('I am inside!'); }
   }
 
@@ -120,7 +123,7 @@ console.log(counter);
 
 Generators
 ---
-Generators allow for function-like behaviour where execution is segmented into "pieces", paused at the end of each piece, and resumed at the start of the next piece. The syntax for generators is similar to that of functions but the `function` keyword is replaced by `function*`. Flow control is dictated with the `yield` keyword.
+Generators allow for function-like behaviour where execution is segmented into "pieces". Execution is paused at the end of each piece and can be resumed at the start of the next piece. The syntax for generators is similar to that of functions but the `function` keyword is replaced by `function*`. Flow control is dictated with `yield` statements.
 
 ```javascript
 function* argumentsGenerator() {
@@ -130,9 +133,9 @@ function* argumentsGenerator() {
 }
 ```
 
-(Note that although the `yield` keyword is *not* a reserved keywork in ES5, the new `function*` syntax guarantees no function using "yield" as a variable name breaks in ES6.)
+(Note that although the `yield` keyword is *not* a reserved keywork in ES5, the new `function*` syntax guarantees no ES5 function using "yield" as a variable name will break in ES6.)
 
-Generators are useful because they return (i.e. create) iterators. In turn, an iterator, which is an object with a `next` method, actually executes the body of generators. The `next` method, when repeatedly called, partially executes the corresponding generator, gradually advancing through the body until a `yield` keyword is hit.
+Generators are useful because they return (i.e. create) iterators. In turn, an iterator, an object with a `next` method, actually executes the body of generators. The `next` method, when repeatedly called, partially executes the corresponding generator, gradually advancing through the body until a `yield` keyword is hit.
 
 ```javascript
 var argumentsIterator = argumentsGenerator('a', 'b', 'c');
@@ -145,10 +148,12 @@ console.log(
 );
 ```
 
+The `next` method of an iterator returns an object with a `value` property and a `done` property, as long as the body of the corresponding generator has not `return`ed. The `value` property refers the value `yield`ed or `return`ed. The `done` property is `false` up until the generator body `return`s, at which point it is `true`. If the `next` method is called after `done` is `true`, an error is thrown.
+
 Alongside generators and iterators, ES6 has syntactic sugar for iteration.
 
 ```javascript
-// Prints "a b c"
+// Prints "a", "b", "c"
 for(let value of argumentsIterator) {
   console.log(value);
 }
@@ -169,7 +174,7 @@ function* fibonacci(limit) {
 }
 ```
 
-...which are enumerated elegantly.
+...which are elegantly enumerated.
 
 ```javascript
 // Prints the Fibonacci numbers less than 1000
@@ -178,7 +183,7 @@ for(let value of fibonacci(1000)) {
 }
 ```
 
-Generators can be used to provide an alternative to the traditional callback flow control, thereby avoiding callback "pyramids" and "hell". Two libraries, [task.js](https://github.com/mozilla/task.js) and [gen-run](https://github.com/creationix/gen-run), aim to help you write asynchronous JavaScript in a sequential style instead of a "nested" style.
+Generators can be used to provide an alternative to the traditional nested callback flow control, thereby avoiding callback "pyramids" and "hell". Two libraries, [task.js](https://github.com/mozilla/task.js) and [gen-run](https://github.com/creationix/gen-run), aim to help write asynchronous JavaScript in a sequential style.
 
 ```javascript
 // task.js example
@@ -192,9 +197,27 @@ spawn(function*() {
 });
 ```
 
-Another advantage of the new sequential flow control is that `try`-`catch` statements become effective again for asynchronous code, so the Node.JS burden of explicitly carrying around errors through the callback chain can be alleviated in ES6.
+The sequential flow control also allows for meaningful `try`-`catch` statements, so the burden of explicitly passing errors through the callback chain, commonly found in Node libraries, can be alleviated in ES6.
 
-TODO: Give an example of a delegated `yield*`.
+To conclude, it is possible for a generator to `yield` to an iterator using a "delegated `yield`" with the syntax `yield*`.
+
+```javascript
+let delegatedIterator = (function* () {
+  yield 'Hello!';
+  yield 'Bye!';
+}());
+
+let delegatingIterator = (function* () {
+  yield 'Greetings!';
+  yield* delegatedIterator;
+  yield 'Ok, bye.';
+}());
+
+// Prints "Greetings!", "Hello!", "Bye!", "Ok, bye."
+for(let value of delegatingIterator) {
+  console.log(value);
+}
+```
 
 Proxies
 ---
