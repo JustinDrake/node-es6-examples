@@ -80,7 +80,7 @@ function fibonacci(n) {
 }
 ```
 
-The `for` loop of the last example has an implicit block scope for the header. This block scope contains the declaration of `i` as well as the block scopes created at runtime by the loop iteration.
+The `for` loop of the last example has an implicit block scope for the head. This block scope contains the declaration of `i` as well as the block scopes created at runtime by the loop iteration.
 
 The designers of ES6 conceived of a baby sister for `let`. The keyword `const` declares block-scoped *constant* variables.
 
@@ -272,6 +272,8 @@ function pythonArray(array) {
 
 Now the index `-1` references the last array element, `-2` the penultimate, etc.
 
+Notice `set` has three arguments; `receiver` refers to the proxy, `index` to the property name and `value` to the property value.
+
 ```javascript
 // Prints "gamma"
 console.log(pythonArray(['alpha', 'beta', 'gamma'])[-1]);
@@ -285,7 +287,7 @@ Suppose a function `f` wants to share an object `o` to another function `g` and 
 
 To recap, `g` interfaces through `p` to access `o`. The relevant trap of `p` in `h` is called triggering the `get` trap of `q` in charge of access control based on `k`.
 
-TODO: Understand with the receiver is. Add examples which are not `get` or `set`.
+TODO: Add examples which are not `get` or `set`.
 
 Maps and sets
 ---
@@ -405,7 +407,7 @@ Uniqueness has interesting consequences.
 
 ```javascript
 let a = Map();
-a[Symbol()] = 'Noise';
+a.set(Symbol(), 'Noise');
 
 // Prints "1" although the one element cannot be accessed!
 console.log(a.size);
@@ -420,14 +422,9 @@ let testSymbol = Symbol('This is a test');
 console.log(testSymbol.name);
 ```
 
-TODO: Private symbols?
+TODO: Discuss private symbols when the get implemented.
 
 Object observation
----
-
-TODO
-
-Modules
 ---
 
 TODO
