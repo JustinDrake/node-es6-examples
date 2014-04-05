@@ -65,7 +65,7 @@ function fibonacci(n) {
 }
 ```
 ```javascript
-// ES6: Variables are conceilled within the appropriate block scope
+// ES6: Variables are concealed within the appropriate block scope
 function fibonacci(n) {
   let previous = 0;
   let current = 1;
@@ -133,7 +133,7 @@ function* argumentsGenerator() {
 }
 ```
 
-(Note that although the `yield` keyword is *not* a reserved keywork in ES5, the new `function*` syntax guarantees no ES5 function using "yield" as a variable name will break in ES6.)
+(Note that although the `yield` keyword is *not* a reserved keyword in ES5, the new `function*` syntax guarantees no ES5 function using "yield" as a variable name will break in ES6.)
 
 Generators are useful because they return (i.e. create) iterators. In turn, an iterator, an object with a `next` method, actually executes the body of generators. The `next` method, when repeatedly called, partially executes the corresponding generator, gradually advancing through the body until a `yield` keyword is hit.
 
@@ -283,7 +283,7 @@ Proxies can also be used for clean data binding. With Backbone.JS models, for ex
 
 Let's conclude proxies with a somewhat sophisticated security example. Please put your abstraction hat on.
 
-Suppose a function `f` wants to share an object `o` to another function `g` and later revoke access to `o`. Well, `f` can give `g` a proxy `p` to `o`. The traps of `p` grant or deny access based on a key `k` private to `f`. Actually, a proxy `q` on the handler object `h` of `p` can implement the access mechinism for all the traps of `p` simultaneously with a single `get` trap.
+Suppose a function `f` wants to share an object `o` to another function `g` and later revoke access to `o`. Well, `f` can give `g` a proxy `p` to `o`. The traps of `p` grant or deny access based on a key `k` private to `f`. Actually, a proxy `q` on the handler object `h` of `p` can implement the access mechanism for all the traps of `p` simultaneously with a single `get` trap.
 
 To recap, `g` interfaces through `p` to access `o`. The relevant trap of `p` in `h` is called triggering the `get` trap of `q` in charge of access control based on `k`.
 
@@ -292,7 +292,7 @@ TODO: Add examples which are not `get` or `set`.
 Maps and sets
 ---
 
-A map can be thought of as a object for which the keys can be arbitrary objects. In ES5, the method `toString` is implicitly called on property keys before a property access, which is less than helpfull for object keys given that `({}.toString())` is `[object Object]`.
+A map can be thought of as a object for which the keys can be arbitrary objects. In ES5, the method `toString` is implicitly called on property keys before a property access, which is less than helpful for object keys given that `({}.toString())` is `[object Object]`.
 
 Let's illustrate...
 
@@ -313,7 +313,7 @@ miracles.set(gods[2], 'Pizza Margherita');
 console.log(miracles.get(gods[0]));
 ```
 
-A set is a data structure containing a finite set of elements, each occuring exactly once. The constructor is `Set`, and the API is simple.
+A set is a data structure containing a finite set of elements, each occurring exactly once. The constructor is `Set`, and the API is simple.
 
 ```javascript
 // Prints [ 'constructor', 'size', 'add', 'has', 'delete', 'clear' ]
@@ -336,16 +336,16 @@ console.log(pleasures.size);
 
 Unfortunately, support for array to set conversion, as well as set iteration is not yet supported in Node.JS.
 
-Both maps and sets are naturally occuring data structures which can and have been implemented through object abuse. We now discuss weak maps, which are data structures which *cannot* be emulated with ES5.
+Both maps and sets are naturally occurring data structures which can and have been implemented through object abuse. We now discuss weak maps, which are data structures which *cannot* be emulated with ES5.
 
 Weak maps
 ---
 
 Weak maps fit in a somewhat different category to that of maps and sets because weak maps fundamentally provide more than just syntax sugar. Weak maps are like maps but are intimately linked to garbage collection, providing a tool to help writing code that does not leak memory.
 
-The JavaScript virtual machine, V8 in the case of Node, periodically frees memory allocated to objects no longer in scope. An object is not longer in scope if there is no chain of references from the current scope leading to it. If an object is held in scope, but never gets used, we say there is a memory leak. Such leaks are especially problematic when they occur periodically, as the memory allocated by the virtual machine increases over time, eventually breaking things.
+The JavaScript virtual machine, V8 in the case of Node, periodically frees memory allocated to objects no longer in scope. An object is no longer in scope if there is no chain of references from the current scope leading to it. If an object is held in scope, but never gets used, we say there is a memory leak. Such leaks are especially problematic when they occur periodically, as the memory allocated by the virtual machine increases over time, eventually breaking things.
 
-By setting a key-value pair in a weap map, no reference to the property *key* is created. Instead, references to keys which are internal to weak maps can be thought as "weak", meaning that from the point of view of the garbage collector they are ignored. In particular, property keys of a weak map cannot be enumerated. Also, weak maps do not have a `size` property analogous to maps as this would expose garbage collector behaviour which should be kept hidden.
+By setting a key-value pair in a weak map, no reference to the property *key* is created. Instead, references to keys which are internal to weak maps can be thought as "weak", meaning that from the point of view of the garbage collector they are ignored. In particular, property keys of a weak map cannot be enumerated. Also, weak maps do not have a `size` property analogous to maps as this would expose garbage collector behaviour which should be kept hidden.
 
 ```javascript
 let weakMap = WeakMap();
