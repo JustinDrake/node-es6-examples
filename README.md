@@ -162,14 +162,12 @@ for(let value of argumentsIterator) {
 Generators are ideal for defining sequences of undetermined lengths...
 
 ```javascript
-function* fibonacci(limit) {
-  let previous = 0;
-  let current = 1;
-
-  while(previous + current < limit) {
-    let temp = previous;
-    previous = current;
-    yield current = temp + current;
+function* fibonacci() {
+  let a = 0, b = 1;
+  
+  while(true) {
+    yield a;
+    [a, b] = [b, a + b];
   }
 }
 ```
