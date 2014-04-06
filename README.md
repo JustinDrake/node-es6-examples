@@ -175,8 +175,8 @@ function* fibonacci() {
 ...which are elegantly enumerated.
 
 ```javascript
-// Prints the Fibonacci numbers less than 1000
-for(let value of fibonacci(1000)) {
+// Enumerates the Fibonacci numbers
+for(let value of fibonacci()) {
   console.log(value);
 }
 ```
