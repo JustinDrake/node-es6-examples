@@ -99,4 +99,48 @@ function fibonacci(n) {
 最后的那个例子`for`循环有个明显的块作用域。块作用域包含`i`的声明,同时循环遍历运行时块作用域被创建。
 
 
-TBC
+ES6的设计者也为`let`生了个妹妹。关键词`const`声明块作用域内的*静态*变量。
+
+```
+const a = 'You shal remain constant!';
+
+// SyntaxError: Assignment to constant variable;
+a = 'I wanna be free';
+```
+
+
+最后，ES6通过块作用域函数定义解决了一个疑难问题。 下面的代码在ES5中不能很好的定义。
+
+
+```
+function f() { console.log('I am outside'); }
+(function () {
+    if (false) {
+        // 重新声明会怎么样?
+        function f() { console.log('I am inside '); }
+    }    
+    f();
+}());
+```
+
+`f`二次声明被销毁？`if`块没有执行导致其被忽略？其作用域在`if`块里？ 不同的浏览器有不同的表现。在ES6函数声明是块作用域，所以上面的代码输出`I am outside!`。
+
+最后， 不能用`let`在同一个块作用域内对相同的变量声明多次，否则会抛出语法错误。在相同的函数域内使用`var`对一个变量多次声明不会抛出错误， 让很多开发者犯错。
+
+```
+var counter = 0;
+for(var i = 0; i < 3; i += 1) {
+    for(var i = 0; i < 3; i += 1) {
+        counter += 1;    
+    }
+}
+// 输出"3", 可能作者本意为9
+console.log(counter);
+```
+
+
+
+##Generators(迭代器)
+
+
+迭代器允许
