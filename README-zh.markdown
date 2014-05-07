@@ -140,7 +140,111 @@ console.log(counter);
 
 
 
-##Generators(迭代器)
+##Generators(遍历器)
+
+有了Generators,函数可以被"分片"执行。在每片的结尾暂停，在下一片开始恢复。Generators的语法与函数类似但是`function`被替代为`function*`.`yield`语句是控制程序顺序的。
 
 
-迭代器允许
+```
+function* argumentsGenerator() {
+    for (let i = 0; i < arguments.length; i += 1) {
+        yield arguments[i];    
+    }
+}
+```
+
+
+(注意虽然ES5中`yield`不是保留字符, 新的`function*`语法保证在ES6中非ES5函数使用“yield”作为变量将会出错)
+
+
+Generators可以返回迭代器。遍历器即带有`next`方法的对象，按顺序执行generators的主体。`next`方法， 被重复调用时， 其实是部分执行对应的产生器， 最终执行整个产生器主直到遇到`yield`关键字。
+
+
+```
+var argumentsIterator = argumentsGenerator('a', 'b', 'c');
+
+// 输出 "a b c"
+console.log(
+    argumentsIterator.next().value,
+    argumentsIterator.next().value,
+    argumnetsIterator.next().value
+);
+```
+
+只要对象的产生器主体还未`return`,迭代器的`next`方法返回一个带有`value`属性和`done`属性的对象。`value`属性就是被返回的值(或者说产生的值)。产生器主体未`return`前，`done`属性为`false`。产生器`return`时， `done`为`true`。如果`done`为`true`, `next`方法被调用，将会抛出错误。 
+
+
+ES6有一些语法糖在遍历器上。
+
+```
+// 输出 "a","b","c"
+for(let value of argumentsIterator) {
+    console.log(value);    
+}
+```
+
+
+有了Generators可以定义不能确定长度的队列....
+
+
+```
+function* fibonacci() {
+    let a = 0; b = 1;
+    while(true) {
+        yield a;    
+        [a, b] = [b, a + b];
+    }
+}
+```
+
+
+可以优雅的遍历其值。
+
+```
+// 遍历Fibonacci数字
+for(let value of fibonacci(){
+    console.log(value);    
+})
+```
+
+
+Generators可以用来解决传统的嵌套式的控制流带来的烦恼，避免多重回调。 两个库， [task.js](https://github.com/mozilla/task.js)和[gen-run](https://github.com/creationix/gen-run)，可以帮助你用同步的风格来写异步Javascript。
+
+
+```
+// task.js example
+spawn(function*(){
+    var data = yield $.ajax(url);    
+    $('#result').html(data);
+    var status = $('#status').html('Download complete');
+    yield status.fadeIn().promise();
+    yield sleep(2000);
+    status.fadeOut();
+});
+```
+
+顺序控制流可以用`try`-`catch`语句， 可以预见在ES6通过回调去错误处理会慢慢减少。
+
+
+使用`yield*`，可以让产生器`yield`一个遍历器。
+
+
+```
+let delegatedIterator = (function*(){
+    yield 'Hello!';
+    yield 'Bye';
+}());
+
+let delegatingIterator = (function* (){
+    yield 'Greetings!';
+    yield* delegatedIterator;
+    yield 'OK, bye';
+}());
+
+// 输出 "Greetings!", "Hello!", "Bye!", "Ok, bye."
+for(let value of delegatingIterator) {
+    console.log(value);    
+}
+```
+
+
