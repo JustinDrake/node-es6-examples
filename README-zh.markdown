@@ -248,3 +248,80 @@ for(let value of delegatingIterator) {
 ```
 
 
+##Proxies
+
+
+Proxy可以理解为一个园编程对象， 将原生的对象行为用函数调用来代替。包裹里的方法是与其相关的处理对象。
+
+```
+var random = Proxy.create({
+    get: function () {
+        return Math.random();
+    }    
+})
+```
+
+
+函数`Proxy.create`创建一个'代理',其处理对象传给第一个参数。这里我们用`get`函数包裹去改写读属性。每次`random`,会有一个新的随机值。
+
+```
+// 输出3个随机数
+
+console.log(random.value, random.value, random.value);
+```
+
+
+相似的， 赋值属性可以再创建`set`函数包裹
+
+
+```
+var time = Proxy.create({
+    get: function () {
+        return Date.now();    
+    },
+    set: function () {
+        throw 'Time travel error1';    
+    }
+})
+```
+
+
+继续阐述对象怎样表现天然属性，我们创建一个数组，其可以像Python一样可以通过负索引取值。
+
+
+```
+function pythonArray(array){
+    var dummy = array;    
+    return Proxy.create({
+        set: function (receiver, index, value) {
+            dummy[index] = value;    
+        },
+        get: function (receiver, index) {
+            index = parseInt(index);
+            return index < 0 ? dummy[dummy.length + index] : dummy[index];
+        }
+    })
+}
+```
+
+
+现在索引`-1`引用数组最后一个元素， `-2`为倒数第二个数，等等
+
+
+注意`set`有3个元素；`receiver`指代理， `index`为属性名， `value`为属性值。
+
+```
+// 输出 "gamma"
+console.log(pythonArray(['alpha', 'beta', 'gamma'])[-1]);
+```
+
+
+代理也可以用来清理数据绑定。用Backbon.JS 模型, 例如数据绑定结束的标志是必须使用`model.get`和`model.set`方法。这种句法结构在proxies是不必要的。
+
+
+下面用一个复杂的安全例子来结束proxies。
+
+
+假设一个函数`f`想要共享一个对象`o`给另外一个函数`g`。
+
+TBC
