@@ -324,4 +324,62 @@ console.log(pythonArray(['alpha', 'beta', 'gamma'])[-1]);
 
 假设一个函数`f`想要共享一个对象`o`给另外一个函数`g`。
 
-TBC
+TODO(understand the example)
+
+
+##Maps和sets数据结构
+
+map可以把它看作一个对象，其与普通对象的不同之处在于， 它的键值可以为任意的对象。在ES5中，`toString`隐式调用属性键值在属性获得值之前， 考虑到`({}.toString())`结果为`[Object Object]`, 可以将属性键值给为对象键值
+
+
+下面举例来说
+
+```
+const gods = [
+    { name: 'Brendan Eich' },
+    { name: 'Guido van Rossum' },
+    { name: 'Raffaele Esposito' }
+];
+
+
+let miracles = Map();
+
+miracles.set(gods[0], 'Javascript');
+miracles.set(gods[1], 'Python');
+miracles.set(gods[2], 'Pizza Margherita');
+
+// 输出 "Javascript"
+console.log(miracles.get(gods[0]));
+```
+
+
+set是一种包含有限元素集合的数据结构。每个值只能出现一次。构造函数是`Set`, api很简单
+
+
+```
+// 输出 ['constructor', 'size', 'add', 'has', 'delete', 'clear']
+console.log(Object.getOwnPropertyNames(Set.prototype));
+```
+
+
+为了举例验证， 我们调查了6个人生活中最快乐的事。
+
+```
+let surveyAnswers = ['sex', 'sleep', 'sex', 'sun', 'sex', 'cinema'];
+let pleasures = new Set();
+surveyAnswers.forEach(function(pleasure) {
+    pleasures.add(pleasure);    
+});
+// 输出pleasures的数目 4, 排除了重复值
+console.log(pleasures.size);
+```
+
+
+不幸的是，目前只支持array和set间的转换，set 遍历还未支持。
+
+maps和sets本该是两种正常使用的数据结构， 但是一直是用对象来代替的。下面将讨论weak maps,这种数据结构是不能用ES5去实现的。
+
+
+##Weak maps
+
+
