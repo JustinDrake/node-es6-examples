@@ -296,7 +296,6 @@ Let's illustrate...
 
 ```javascript
 const gods = [
-  {name: 'Brendan Eich'},
   {name: 'Guido van Rossum'},
   {name: 'Raffaele Esposito'}
 ];
