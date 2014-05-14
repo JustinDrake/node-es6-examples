@@ -323,7 +323,7 @@ To illustrate, we have surveyed six people regarding their greatest pleasure in 
 ```javascript
 let surveyAnswers = ['sex', 'sleep', 'sex', 'sun', 'sex', 'cinema'];
 
-let pleasures = Set();
+let pleasures = new Set();
 surveyAnswers.forEach(function (pleasure) {
   pleasures.add(pleasure);
 });
