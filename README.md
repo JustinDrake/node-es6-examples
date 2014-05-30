@@ -110,6 +110,7 @@ Should the redeclaration of `f` be hoisted? Should it be ignored because the `if
 Finally, ES6 throws a syntax error when multiple `let` declarations of the same variable occur in the same block. No analogous error is thrown for `var` redeclarations within the same function scope, which has led some developers astray.
 
 ```javascript
+// ES5: `var` hoisting results in one declaration for `i`
 var counter = 0;
 for(var i = 0; i < 3; i += 1) {
   for(var i = 0; i < 3; i += 1) {
@@ -119,6 +120,24 @@ for(var i = 0; i < 3; i += 1) {
 
 // Prints "3" although the author probably meant it to print "9"
 console.log(counter);
+```
+
+```javascript
+// ES6: `let` declarations block scoped
+var counter = 0;
+for(let i = 0; i < 3; i += 1) {
+  for(let i = 0; i < 3; i += 1) {
+    counter += 1;
+  }
+}
+
+// Prints "9"
+console.log(counter);
+
+{
+    let i;
+    let i;
+} // SyntaxError: Variable 'i' has already been declared
 ```
 
 Generators
