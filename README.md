@@ -1,26 +1,26 @@
 ECMAScript 6 in Node.JS
 ===
 
-This text introduces and illustrates, with simple examples, ECMAScript 6 (ES6 for short) features natively available in Node. No transpiler or shim is required to run the examples. We hope the reader will find the subset of ES6 presented here interesting.
+This text introduces and illustrates, with simple examples, ECMAScript 6 (ES6 for short) features natively available in Node. No transpiler or shim is required to run the code snippets. We hope the reader finds the subset of ES6 presented here interesting.
 
-The underlying philosophy and broad direction of ES6 has mostly been agreed upon. However, implementation details have and will change until the final specification is published. Experimental ES6 in Node may not comply with the latest draft specification (which is available [here](http://people.mozilla.org/~jorendorff/es6-draft.html) in HTML format).
+The underlying philosophy and broad direction of ES6 has mostly been agreed upon. However, implementation details are polished until the final specification is published. Experimental ES6 in Node may not comply with the latest draft specification, available [here](http://people.mozilla.org/~jorendorff/es6-draft.html).
 
-For a list of flags enabling experimental JavaScript in Node use the command `node --v8-options | grep harmony`. The unstable branch 0.11.x has greater ES6 support than the stable branch 0.10.x. For simplicity, we assume the 0.11.x branch here, but most examples will work in 0.10.x also. To easily switch between versions, we recommend the excellent [n](https://github.com/visionmedia/n) Node version manager.
+We assume the unstable 0.11.x branch, which has greater ES6 support than the stable 0.10.x branch. For version control, we recommend [n](https://github.com/visionmedia/n). To list the flags enabling experimental ES6 in Node, use ```node --v8-options | grep harmony```.
 
-The single `--harmony` flag enables most of the ES6 experimental features. However, as of v0.11.3, you will also need the `--use_strict` flag for the block scoping examples, along with the `--harmony_generators` flag for the generator examples.
+The single `--harmony` flag enables most of the ES6 experimental features. As of v0.11.13, you need the `--use_strict` flag for the block scoping examples.
 
 Pull requests are welcome. Enjoy.
 
 Block scoping
 ---
-Let's start with `let`. You can think of `let` as a block-scoped variation of `var` for variable declaration.
+Let us start with `let`. Think of `let` as a block-scoped variation of `var` for variable declaration.
 
 ```javascript
 { let a = 'I am declared inside an anonymous block'; }
 console.log(a); // ReferenceError: a is not defined
 ```
 
-Up until ES6, JavaScript only had function scoping. This is considered a design flaw which developers hack around. We illustrate improvements brought by ES6 with two examples.
+Up until ES6, JavaScript only had function scoping, largely considered a design flaw. We illustrate improvements brought by ES6 with three examples.
 
 The first example is about private variables.
 
@@ -70,7 +70,7 @@ function fibonacci(n) {
   let previous = 0;
   let current = 1;
 
-  for(let i = 0; i < n; i += 1) {
+  for(let i = 0; i < n; i += 1) { // Implicit block scope for the loop header
     let temp = previous;
     previous = current;
     current = temp + current;
@@ -80,18 +80,40 @@ function fibonacci(n) {
 }
 ```
 
-The `for` loop of the last example has an implicit block scope for the head. This block scope contains the declaration of `i` as well as the block scopes created at runtime by the loop iteration.
+The third example is regarding nested for loops.
+
+```javascript
+// ES5: Reusing the same loop variable name is bad
+var counter = 0;
+for(var i = 0; i < 3; i += 1) {
+  for(var i = 0; i < 3; i += 1) {
+    counter += 1;
+  }
+}
+
+console.log(counter); // Oops, prints "3"
+```
+```javascript
+// ES6: Reusing the same loop variable name is OK
+var counter = 0;
+for(let i = 0; i < 3; i += 1) {
+  for(let i = 0; i < 3; i += 1) {
+    counter += 1;
+  }
+}
+
+console.log(counter); // Prints "9"
+```
 
 The designers of ES6 conceived of a baby sister for `let`. The keyword `const` declares block-scoped *constant* variables.
 
 ```javascript
 const a = 'You shall remain constant!';
 
-// SyntaxError: Assignment to constant variable
-a = 'I wanna be free!';
+a = 'I wanna be free!'; // SyntaxError: Assignment to constant variable
 ```
 
-Finally, ES6 is fixing a long standing issue with block scope function definitions. The following code is not well defined in the ES5 specification.
+On a more esoteric note, ES6 is fixing a long standing issue with block scope function definitions. The following code is not well defined in the ES5 specification.
 
 ```javascript
 function f() { console.log('I am outside!'); }
@@ -107,18 +129,13 @@ function f() { console.log('I am outside!'); }
 
 Should the redeclaration of `f` be hoisted? Should it be ignored because the `if` block is not executed? Should it be scoped to the `if` block? Different browsers handle things differently. In ES6 function declarations are block-scoped, so the above snippet will print `I am outside!`.
 
-Finally, ES6 throws a syntax error when multiple `let` declarations of the same variable occur in the same block. No analogous error is thrown for `var` redeclarations within the same function scope, which has led some developers astray.
+Finally, ES6 throws a syntax error when multiple `let` declarations of the same variable occur in the same block. No analogous error is thrown for `var` redeclarations within the same scope.
 
 ```javascript
-var counter = 0;
-for(var i = 0; i < 3; i += 1) {
-  for(var i = 0; i < 3; i += 1) {
-    counter += 1;
-  }
+{
+  let a;
+  let a; // SyntaxError: Variable 'a' has already been declared
 }
-
-// Prints "3" although the author probably meant it to print "9"
-console.log(counter);
 ```
 
 Generators
@@ -164,7 +181,7 @@ Generators are ideal for defining sequences of undetermined lengths...
 ```javascript
 function* fibonacci() {
   let a = 0, b = 1;
-  
+
   while(true) {
     yield a;
     [a, b] = [b, a + b];
