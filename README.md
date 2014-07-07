@@ -318,7 +318,7 @@ const gods = [
   {name: 'Raffaele Esposito'}
 ];
 
-let miracles = Map();
+let miracles = new Map();
 
 miracles.set(gods[0], 'JavaScript');
 miracles.set(gods[1], 'Python');
