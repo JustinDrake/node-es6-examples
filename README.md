@@ -11,6 +11,14 @@ The single `--harmony` flag enables most of the ES6 experimental features. As of
 
 Pull requests are welcome. Enjoy.
 
+## <a name='toc'>Table of Contents</a>
+  1. [Block Scoping](#block-scoping)
+  2. [Generators](#generators)
+  3. [Proxies](#proxies)
+  4. [Maps and Sets](#maps-and-sets)
+  5. [Weak Maps](#weak-maps)
+  6. [Symbols](#symbols)
+
 Block scoping
 ---
 Let us start with `let`. Think of `let` as a block-scoped variation of `var` for variable declaration.
