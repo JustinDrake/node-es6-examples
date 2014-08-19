@@ -1,6 +1,7 @@
 ##ECMAScript 6 in Node.JS
 
 
+
 此文主要用一些简单的例子来介绍ECMAScript6(以下用ES6代替)的一些可以在Node中应用的特性。不需要转译器或[shim](http://www.cnblogs.com/ziyunfei/archive/2012/09/17/2688829.html)就可以运行这些例子。
 
 
@@ -18,6 +19,15 @@ ES6的基本方案已确定。但是在正式发布前一些具体的语法会�
  **在使用版本v0.11.9, 使用let语法时，必须使用`node --harmony --use_strict test.js`, 否则会报警`SyntaxError: Illegal let declaration outside extended mode`**
 
 欢迎Pull requests,Enjoy~
+
+
+## <a name='toc'> 內容目錄</a>
+ 1. [塊作用域](#block-scoping)
+ 2. [遍歷器](#generators)
+ 3. [代理](#proxies)
+ 4. [Maps and Sets數據結構](#maps-and-sets)
+ 5. [Weak Maps](#weak-maps)
+ 6. [Symbols](#symbols)
 
 
 ##Block scoping(块作用域)
