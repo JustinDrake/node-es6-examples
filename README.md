@@ -3,7 +3,7 @@ ECMAScript 6 in Node.JS
 
 This text introduces and illustrates, with simple examples, ECMAScript 6 (ES6 for short) features natively available in Node. No transpiler or shim is required to run the code snippets. We hope the reader finds the subset of ES6 presented here interesting.
 
-The underlying philosophy and broad direction of ES6 has mostly been agreed upon. However, implementation details are polished until the final specification is published. Experimental ES6 in Node may not comply with the latest draft specification, available [here](http://people.mozilla.org/~jorendorff/es6-draft.html).
+The underlying philosophy and broad direction of ES6 has mostly been agreed upon. However, implementation details are being polished until the final specification is published. Experimental ES6 in Node may not comply with the latest draft specification, available [here](http://people.mozilla.org/~jorendorff/es6-draft.html).
 
 We assume the unstable 0.11.x branch, which has greater ES6 support than the stable 0.10.x branch. For version control, we recommend [n](https://github.com/visionmedia/n). To list the flags enabling experimental ES6 in Node, use ```node --v8-options | grep harmony```.
 
