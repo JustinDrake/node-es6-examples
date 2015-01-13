@@ -450,7 +450,37 @@ TODO: Discuss private symbols when the get implemented.
 Object observation
 ---
 
-TODO
+`Object.observe(object, callback)` allows you asynchronously track changes to an object in the order it happens.
+```javascript
+var someObj = {
+  prop1: 'foo',
+  prop2: 'bar'
+};
+
+Object.observe(someObj, function(changes) {
+  console.log(changes);
+});
+
+someObj.prop1 = 'newFoo';
+/* Prints:
+  [ { type: 'updated',
+      object: { prop1: 'newFoo', prop2: 'bar' },
+      name: 'prop1',
+      oldValue: 'foo' } ] */
+
+someObj.prop3 = 'newProp';
+/* Prints:
+  [ { type: 'new',
+      object: { prop1: 'newFoo', prop2: 'bar', prop3: 'newProp' },
+      name: 'prop3' } ] */
+
+delete someObj.prop3;
+/* Prints:
+  [ { type: 'deleted',
+      object: { prop1: 'newFoo', prop2: 'bar' },
+      name: 'prop3',
+      oldValue: 'newProp' } ] */
+```
 
 Typed arrays and array buffers
 ---
